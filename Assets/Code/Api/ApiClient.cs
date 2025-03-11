@@ -23,6 +23,7 @@ public class ApiClient : MonoBehaviour
     public TMP_InputField PasswordInput;
     public TMP_InputField WorldNameInput;
     public GameObject ErrorTxt;
+    public GameObject NameDupeError;
     public Tilemap tilemapGround;
     public TileBase grassTile;
     private List<PostEnvironmentSaveDto> environmentsList;
@@ -119,7 +120,15 @@ public class ApiClient : MonoBehaviour
         var allEnvironments = await PerformApiCall($"https://localhost:7239/api/environment/get?owner={Uri.EscapeDataString(ownerId)}", "GET", null, accesTokenString);
         // Retrieves each individual world and puts it in a list.
         List<PostEnvironmentSaveDto> environmentsList = JsonConvert.DeserializeObject<List<PostEnvironmentSaveDto>>(allEnvironments);
-
+        foreach (var environment in environmentsList)
+        {
+            if (WorldNameInput.text == environment.name)
+            {
+                NameDupeError.SetActive(true);
+                return;
+            }
+        }
+        NameDupeError.SetActive(false);
         if (environmentsList.Count < 5)
         {
             // Saves the created environment to a database.

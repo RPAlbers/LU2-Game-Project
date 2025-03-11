@@ -36,7 +36,7 @@ public class Login : MonoBehaviour
     public GameObject ContainerWorldFour;
     public GameObject ContainerWorldFive;
     public GameObject ReturnButtonLoad;
-
+    public GameObject NameDupeError;
 
 
     public void Start()
@@ -71,6 +71,7 @@ public class Login : MonoBehaviour
         ContainerWorldFour.SetActive(false);
         ContainerWorldFive.SetActive(false);
         ReturnButtonLoad.SetActive(false);
+        NameDupeError.SetActive(false);
 
         GameTitle.SetActive(true);
         RegisterButton.SetActive(true);
