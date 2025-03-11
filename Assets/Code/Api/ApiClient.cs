@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using Newtonsoft.Json;
 using System.Reflection;
+using UnityEngine.Rendering;
 
 public class ApiClient : MonoBehaviour
 {
@@ -110,7 +111,6 @@ public class ApiClient : MonoBehaviour
     public async void CreateEnvironment()
     {
         Debug.Log("Saving environment");
-
         // Retrieves the id of the worldowner.
         var ownerId = await PerformApiCall($"https://localhost:7239/api/user/id?email={Uri.EscapeDataString(email)}", "GET", null, accesTokenString);
 
@@ -142,12 +142,25 @@ public class ApiClient : MonoBehaviour
             SceneManager.LoadScene(0);
         }    
     }
+    
+    public async void DeleteEnvironment(int index)
+    {
+        var environmentToDelete = environmentsList[index].id;
+        var data = JsonUtility.ToJson(environmentToDelete);
+        await PerformApiCall($"https://localhost:7239/api/environment/delete?id={Uri.EscapeDataString(environmentToDelete)}", "DELETE", null, accesTokenString);
+        LoadEnvironment();
+    }
 
 
     // Loads all the environments beloging to a certain account.
     public async void LoadEnvironment()
     {
         Debug.Log("Saving environment");
+
+        foreach (var world in WorldList)
+        {
+            world.SetText("...");
+        }
 
         // Retrieves the id of the worldowner
         var data = JsonUtility.ToJson(email);
@@ -222,7 +235,7 @@ public class ApiClient : MonoBehaviour
     }
 
     // Saves 2D objects as soon as they are placed down.
-    public async void SaveObject2D()
+    public async void SaveObject2D(float modifiedPositionX, float modifiedPositionY)
     {
         Debug.Log("Saving 2D Object");
         Debug.Log(menuPanel.placedObjects.Count);
@@ -234,8 +247,8 @@ public class ApiClient : MonoBehaviour
             {
                 Id = environmentId,
                 PrefabId = objectPlaced.PrefabId,
-                PositionX = objectPlaced.PositionX,
-                PositionY = objectPlaced.PositionY,
+                PositionX = modifiedPositionX,
+                PositionY = modifiedPositionY,
                 ScaleX = objectPlaced.ScaleX,
                 ScaleY = objectPlaced.ScaleY,
                 RotationZ = objectPlaced.RotationZ,

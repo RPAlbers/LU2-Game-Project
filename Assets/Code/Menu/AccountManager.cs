@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class Login : MonoBehaviour
@@ -29,6 +30,12 @@ public class Login : MonoBehaviour
     public GameObject WorldThree;
     public GameObject WorldFour;
     public GameObject WorldFive;
+    public GameObject ContainerWorldOne;
+    public GameObject ContainerWorldTwo;
+    public GameObject ContainerWorldThree;
+    public GameObject ContainerWorldFour;
+    public GameObject ContainerWorldFive;
+    public GameObject ReturnButtonLoad;
 
 
 
@@ -58,6 +65,12 @@ public class Login : MonoBehaviour
         WorldFive.SetActive(false);
         LoadWorldTxt.SetActive(false);
         ErrorTxt.SetActive(false);
+        ContainerWorldOne.SetActive(false);
+        ContainerWorldTwo.SetActive(false);
+        ContainerWorldThree.SetActive(false);   
+        ContainerWorldFour.SetActive(false);
+        ContainerWorldFive.SetActive(false);
+        ReturnButtonLoad.SetActive(false);
 
         GameTitle.SetActive(true);
         RegisterButton.SetActive(true);
@@ -102,6 +115,21 @@ public class Login : MonoBehaviour
         LoginTitle.SetActive(false);
         ReturnButton.SetActive(false);
         RegisterButton.SetActive (false);
+        LoadWorldTxt.SetActive(false);
+        WorldOne.SetActive(false);
+        WorldTwo.SetActive(false);
+        WorldThree.SetActive(false);
+        WorldFour.SetActive(false);
+        WorldFive.SetActive(false);
+        ContainerWorldOne.SetActive(false);
+        ContainerWorldTwo.SetActive(false);
+        ContainerWorldThree.SetActive(false);
+        ContainerWorldFour.SetActive(false);
+        ContainerWorldFive.SetActive(false);
+        WorldNameInput.SetActive(false);
+        CreateWorldTxt.SetActive(false);
+        CreateWorldSubmitButton.SetActive(false);
+        ReturnButtonLoad.SetActive(false);
 
         GameTitle.SetActive(true);
         LoadWorldButton.SetActive(true);
@@ -119,6 +147,7 @@ public class Login : MonoBehaviour
         WorldNameInput.SetActive(true);
         CreateWorldTxt.SetActive(true);
         CreateWorldSubmitButton.SetActive(true);
+        ReturnButtonLoad.SetActive(true);
     }
 
     public void LoadWorld()
@@ -135,5 +164,11 @@ public class Login : MonoBehaviour
         WorldThree.SetActive(true);
         WorldFour.SetActive(true);
         WorldFive.SetActive(true);
+        ContainerWorldOne.SetActive(true);
+        ContainerWorldTwo.SetActive(true);
+        ContainerWorldThree.SetActive(true);
+        ContainerWorldFour.SetActive(true);
+        ContainerWorldFive.SetActive(true);
+        ReturnButtonLoad.SetActive(true);
     }
 }

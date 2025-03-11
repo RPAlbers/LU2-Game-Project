@@ -8,6 +8,8 @@ public class DragAndDrop : MonoBehaviour
     public bool isDragging;
     public ApiClient apiClient;
     public GameObject CodeMenu;
+    public float finalPositionX;
+    public float finalPositionY;
 
     void Start()
     {
@@ -24,7 +26,9 @@ public class DragAndDrop : MonoBehaviour
         Debug.Log(isDragging);
         if (!isDragging)
         {
-            apiClient.SaveObject2D();
+            finalPositionX = transform.position.x;
+            finalPositionY = transform.position.y;
+            apiClient.SaveObject2D(finalPositionX, finalPositionY);
         }
     }
 
