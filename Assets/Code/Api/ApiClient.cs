@@ -73,7 +73,7 @@ public class ApiClient : MonoBehaviour
             Debug.Log(jsondata);
             email = NameInput.text;
             isRegisteredSuccusfully = true;
-            await PerformApiCall("https://localhost:7239/account/register", "POST", jsondata); // Register for user.
+            await PerformApiCall("https://avansict2227982.azurewebsites.net/account/register", "POST", jsondata); // Register for user.
         }
         else
         {
@@ -97,7 +97,7 @@ public class ApiClient : MonoBehaviour
         Debug.Log(jsondata);
         email = NameInput.text;
         isSuccesfullyLoggedIn = true;
-        var response = await PerformApiCall("https://localhost:7239/account/login", "POST", jsondata); // Login for user.
+        var response = await PerformApiCall("https://avansict2227982.azurewebsites.net/account/login", "POST", jsondata); // Login for user.
         Debug.Log(response);
         var accesToken = JsonUtility.FromJson<PostLoginResponseDto>(response);
 
@@ -113,11 +113,11 @@ public class ApiClient : MonoBehaviour
     {
         Debug.Log("Saving environment");
         // Retrieves the id of the worldowner.
-        var ownerId = await PerformApiCall($"https://localhost:7239/api/user/id?email={Uri.EscapeDataString(email)}", "GET", null, accesTokenString);
+        var ownerId = await PerformApiCall($"https://avansict2227982.azurewebsites.net/api/user/id?email={Uri.EscapeDataString(email)}", "GET", null, accesTokenString);
 
 
         // Retrieves all the worlds that the logged in user created.
-        var allEnvironments = await PerformApiCall($"https://localhost:7239/api/environment/get?owner={Uri.EscapeDataString(ownerId)}", "GET", null, accesTokenString);
+        var allEnvironments = await PerformApiCall($"https://avansict2227982.azurewebsites.net/api/environment/get?owner={Uri.EscapeDataString(ownerId)}", "GET", null, accesTokenString);
         // Retrieves each individual world and puts it in a list.
         List<PostEnvironmentSaveDto> environmentsList = JsonConvert.DeserializeObject<List<PostEnvironmentSaveDto>>(allEnvironments);
         foreach (var environment in environmentsList)
@@ -147,7 +147,7 @@ public class ApiClient : MonoBehaviour
             Debug.Log("Id is: " + environmentId);
             var jsondata = JsonUtility.ToJson(saveRequest);
             Debug.Log("Data: " + jsondata);
-            await PerformApiCall("https://localhost:7239/api/environment/create", "POST", jsondata, accesTokenString);
+            await PerformApiCall("https://avansict2227982.azurewebsites.net/api/environment/create", "POST", jsondata, accesTokenString);
             SceneManager.LoadScene(0);
         }    
     }
@@ -156,7 +156,7 @@ public class ApiClient : MonoBehaviour
     {
         var environmentToDelete = environmentsList[index].id;
         var data = JsonUtility.ToJson(environmentToDelete);
-        await PerformApiCall($"https://localhost:7239/api/environment/delete?id={Uri.EscapeDataString(environmentToDelete)}", "DELETE", null, accesTokenString);
+        await PerformApiCall($"https://avansict2227982.azurewebsites.net/api/environment/delete?id={Uri.EscapeDataString(environmentToDelete)}", "DELETE", null, accesTokenString);
         LoadEnvironment();
     }
 
@@ -173,11 +173,11 @@ public class ApiClient : MonoBehaviour
 
         // Retrieves the id of the worldowner
         var data = JsonUtility.ToJson(email);
-        var ownerId = await PerformApiCall($"https://localhost:7239/api/user/id?email={Uri.EscapeDataString(email)}", "GET", data, accesTokenString);
+        var ownerId = await PerformApiCall($"https://avansict2227982.azurewebsites.net/api/user/id?email={Uri.EscapeDataString(email)}", "GET", data, accesTokenString);
         Debug.Log("Het gevonden Id is: " + ownerId);
 
         // Retrieves all the worlds that the logged in user created.
-        var allWorlds = await PerformApiCall($"https://localhost:7239/api/environment/get?owner={Uri.EscapeDataString(ownerId)}", "GET", null, accesTokenString);
+        var allWorlds = await PerformApiCall($"https://avansict2227982.azurewebsites.net/api/environment/get?owner={Uri.EscapeDataString(ownerId)}", "GET", null, accesTokenString);
 
         // Wraps each individual world.
         environmentsList = JsonConvert.DeserializeObject<List<PostEnvironmentSaveDto>>(allWorlds);
@@ -196,17 +196,17 @@ public class ApiClient : MonoBehaviour
         Debug.Log("Searching Environment");
         SceneManager.LoadScene(0);
         var data = JsonUtility.ToJson(email);
-        var ownerId = await PerformApiCall($"https://localhost:7239/api/user/id?email={Uri.EscapeDataString(email)}", "GET", data, accesTokenString);
+        var ownerId = await PerformApiCall($"https://avansict2227982.azurewebsites.net/api/user/id?email={Uri.EscapeDataString(email)}", "GET", data, accesTokenString);
         Debug.Log("Het gevonden Id is: " + ownerId);
 
-        var allWorlds = await PerformApiCall($"https://localhost:7239/api/environment/get?owner={Uri.EscapeDataString(ownerId)}", "GET", null, accesTokenString);
+        var allWorlds = await PerformApiCall($"https://avansict2227982.azurewebsites.net/api/environment/get?owner={Uri.EscapeDataString(ownerId)}", "GET", null, accesTokenString);
 
         environmentsList = JsonConvert.DeserializeObject<List<PostEnvironmentSaveDto>>(allWorlds);;
         PlayerPrefs.SetString("environmentId", environmentsList[index].id);
         environmentId = environmentsList[index].id;
         PlayerPrefs.Save();
         Debug.Log("Environment Id is: " + environmentId);
-        var allObjects = await PerformApiCall($"https://localhost:7239/api/object2d/get?id={Uri.EscapeDataString(environmentId)}", "GET", null, accesTokenString);
+        var allObjects = await PerformApiCall($"https://avansict2227982.azurewebsites.net/api/object2d/get?id={Uri.EscapeDataString(environmentId)}", "GET", null, accesTokenString);
 
         objectsList = JsonConvert.DeserializeObject<List<PostObjectSaveDto>>(allObjects);
 
@@ -265,7 +265,7 @@ public class ApiClient : MonoBehaviour
             };
             var data = JsonUtility.ToJson(saveRequest);
             Debug.Log(data);
-            await PerformApiCall("https://localhost:7239/api/object2d/create", "POST", data, accesTokenString);
+            await PerformApiCall("https://avansict2227982.azurewebsites.net/api/object2d/create", "POST", data, accesTokenString);
         }
     }
 

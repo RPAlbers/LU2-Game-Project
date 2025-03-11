@@ -131,6 +131,7 @@ public class Login : MonoBehaviour
         CreateWorldTxt.SetActive(false);
         CreateWorldSubmitButton.SetActive(false);
         ReturnButtonLoad.SetActive(false);
+        ErrorTxt.SetActive(false);
 
         GameTitle.SetActive(true);
         LoadWorldButton.SetActive(true);
@@ -143,6 +144,7 @@ public class Login : MonoBehaviour
         LoadWorldButton.SetActive(false);
         CreateWorldButton.SetActive(false);
         SubmitButton.SetActive(false);
+        ErrorTxt.SetActive (false);
 
         Background.SetActive(true);
         WorldNameInput.SetActive(true);
@@ -157,6 +159,7 @@ public class Login : MonoBehaviour
         LoadWorldButton.SetActive(false);
         CreateWorldButton.SetActive(false);
         SubmitButton.SetActive(false);
+        ErrorTxt.SetActive(false);
 
         Background.SetActive (true);
         LoadWorldTxt.SetActive(true);
