@@ -15,6 +15,7 @@ public class Login : MonoBehaviour
     public GameObject RegisterTitle;
     public GameObject ReturnButton;
     public GameObject SubmitButton;
+    public GameObject ErrorTxt;
 
     //Buttons for loading or creating world
     public GameObject CreateWorldButton;
@@ -56,6 +57,7 @@ public class Login : MonoBehaviour
         WorldFour.SetActive(false);
         WorldFive.SetActive(false);
         LoadWorldTxt.SetActive(false);
+        ErrorTxt.SetActive(false);
 
         GameTitle.SetActive(true);
         RegisterButton.SetActive(true);

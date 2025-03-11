@@ -11,6 +11,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using Newtonsoft.Json;
+using System.Reflection;
 
 public class ApiClient : MonoBehaviour
 {
@@ -20,10 +21,12 @@ public class ApiClient : MonoBehaviour
     public TMP_InputField NameInput;
     public TMP_InputField PasswordInput;
     public TMP_InputField WorldNameInput;
+    public GameObject ErrorTxt;
     public Tilemap tilemapGround;
     public TileBase grassTile;
     private List<PostEnvironmentSaveDto> environmentsList;
     private List<PostObjectSaveDto> objectsList;
+    private bool isLoggingIn;
     private bool isRegistering;
     private bool isRegisteredSuccusfully;
     private bool isSuccesfullyLoggedIn;
@@ -82,6 +85,7 @@ public class ApiClient : MonoBehaviour
     public async void Login()
     {
         Debug.Log("Inloggen");
+        isLoggingIn = true;
         var registerRequest = new PostLoginDto()
         {
             email = NameInput.text,
@@ -94,7 +98,11 @@ public class ApiClient : MonoBehaviour
         var response = await PerformApiCall("https://localhost:7239/account/login", "POST", jsondata); // Login for user.
         Debug.Log(response);
         var accesToken = JsonUtility.FromJson<PostLoginResponseDto>(response);
+
+        PlayerPrefs.SetString("accesTokenString", accesToken.accessToken);
         accesTokenString = accesToken.accessToken;
+        PlayerPrefs.Save();
+        isLoggingIn = false;
     }
 
 
@@ -125,18 +133,12 @@ public class ApiClient : MonoBehaviour
                 owner = ownerId
             };
             PlayerPrefs.SetString("environmentId", saveRequest.id);
+            environmentId = saveRequest.id;
             PlayerPrefs.Save();
             Debug.Log("Id is: " + environmentId);
             var jsondata = JsonUtility.ToJson(saveRequest);
             Debug.Log("Data: " + jsondata);
             await PerformApiCall("https://localhost:7239/api/environment/create", "POST", jsondata, accesTokenString);
-
-            // Retrieves all the worlds that the logged in user created.
-            var allWorlds = await PerformApiCall($"https://localhost:7239/api/environment/get?owner={Uri.EscapeDataString(ownerId)}", "GET", null, accesTokenString);
-
-            // Retrieves each individual world and puts it in a list.
-            //List<PostEnvironmentSaveDto> worldsList = JsonConvert.DeserializeObject<List<PostEnvironmentSaveDto>>(allWorlds);
-
             SceneManager.LoadScene(0);
         }    
     }
@@ -170,19 +172,53 @@ public class ApiClient : MonoBehaviour
     public async void SearchEnvironment(int index)
     {
         Debug.Log("Searching Environment");
-        PlayerPrefs.SetString("environmentId", environmentsList[index].id);
-        PlayerPrefs.Save();
-        var selectedWorld = environmentsList[index];
+        SceneManager.LoadScene(0);
+        var data = JsonUtility.ToJson(email);
+        var ownerId = await PerformApiCall($"https://localhost:7239/api/user/id?email={Uri.EscapeDataString(email)}", "GET", data, accesTokenString);
+        Debug.Log("Het gevonden Id is: " + ownerId);
 
-        var allObjects = await PerformApiCall($"https://localhost7239/api/object2d/get?id={Uri.EscapeDataString(environmentId)}", "GET", null, accesTokenString);
+        var allWorlds = await PerformApiCall($"https://localhost:7239/api/environment/get?owner={Uri.EscapeDataString(ownerId)}", "GET", null, accesTokenString);
+
+        environmentsList = JsonConvert.DeserializeObject<List<PostEnvironmentSaveDto>>(allWorlds);;
+        PlayerPrefs.SetString("environmentId", environmentsList[index].id);
+        environmentId = environmentsList[index].id;
+        PlayerPrefs.Save();
+        Debug.Log("Environment Id is: " + environmentId);
+        var allObjects = await PerformApiCall($"https://localhost:7239/api/object2d/get?id={Uri.EscapeDataString(environmentId)}", "GET", null, accesTokenString);
 
         objectsList = JsonConvert.DeserializeObject<List<PostObjectSaveDto>>(allObjects);
 
         foreach (var obj in objectsList)
         {
-            Debug.Log(obj.PrefabId);
+            string prefabName = GetRightPrefab(Convert.ToInt32(obj.PrefabId));
+            GameObject prefab = Resources.Load<GameObject>($"Prefabs/{prefabName}");
+
+            GameObject newObject = Instantiate(prefab, new Vector3(obj.PositionX, obj.PositionY, 0), Quaternion.Euler(0, 0, obj.RotationZ));
+            newObject.transform.localScale = new Vector3(obj.ScaleX, obj.ScaleY, 1);
+            SpriteRenderer renderer = newObject.GetComponent<SpriteRenderer>();
+            if (renderer != null)
+            {
+                renderer.sortingOrder = obj.SortingLayer;
+            }
         }
 
+    }
+
+    public string GetRightPrefab(int prefabId)
+    {
+        switch (prefabId)
+        {
+            case 0:
+                return "Billboard";
+            case 1:
+                return "Campfire";
+            case 2:
+                return "Lantern";
+            case 3:
+                return "Sign";
+            default:
+                return "Billboard";
+        }
     }
 
     // Saves 2D objects as soon as they are placed down.
@@ -250,6 +286,10 @@ public class ApiClient : MonoBehaviour
             else
             {
                 Debug.Log("Fout bij API-aanroep: " + request.error);
+                if (isLoggingIn)
+                {
+                    ErrorTxt.SetActive(true);
+                }
                 return null;
             }
         }
